@@ -8,7 +8,7 @@
                         @removed="deleteField(field.id)"
                         :key="field.name">
                 </field-properties-card>
-                <div class="col-auto pr-0">
+                <div class="col-auto mr-2">
                     <b-button class="float-right mb-5"  @click="addField()" variant="primary">New Field
                     </b-button>
                 </div>

@@ -6,11 +6,7 @@ export const actionTypes = {
 
 export const fieldTypes = {
     Text: 'Text',
-    Check: 'Check',
-    Radio: 'Radio',
-    Select: 'Select',
-    Email: 'Email',
-    Password: 'Password'
+    Select: 'Select'
 };
 
 const state = {
@@ -33,7 +29,7 @@ const mutations = {
         const newField = {
             id: newId,
             name: `${newId} Field`,
-            type: addPayload.type
+            type: fieldTypes.Text
         };
 
         fields.push(newField);
