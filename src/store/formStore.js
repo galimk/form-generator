@@ -1,29 +1,47 @@
 export const actionTypes = {
-    addField: 'ADD_FIELD',
-    deleteField: 'DELETE_FIELD',
-    updateField: 'UPDATED_FIELD'
+    addField: 'addField',
+    deleteField: 'deleteField',
+    updateField: 'updateField'
 };
 
 export const fieldTypes = {
-    Text: 'TEXT',
-    Check: 'CHK',
-    Radio: 'RADIO',
-    Select: 'SELECT'
+    Text: 'Text',
+    Check: 'Check',
+    Radio: 'Radio',
+    Select: 'Select',
+    Email: 'Email',
+    Password: 'Password'
 };
 
-const state = {};
+const state = {
+    fields: []
+};
 
 const actions = {
     [actionTypes.addField]: ({commit}, fieldType) => {
         commit(actionTypes.addField, {type: fieldType});
+    },
+    [actionTypes.deleteField]: ({commit}, fieldId) => {
+        commit(actionTypes.deleteField, {type: fieldId});
     }
 };
 
 const mutations = {
     [actionTypes.addField]: (state, addPayload) => {
-        console.log('add field is invoked..');
+        const fields = [...state.fields];
+
+        const newField = {
+            name: `${fields.length} Field`,
+            type: addPayload.type
+        };
+
+        fields.push(newField);
+
+        state.fields = fields;
     },
     [actionTypes.deleteField]: (state, deletePayload) => {
+        const fields = [...state.fields];
+
 
     },
     [actionTypes.updateField]: (state, updatedPayload) => {
@@ -31,7 +49,9 @@ const mutations = {
     }
 };
 
-const getters = {};
+const getters = {
+    fields: state => state.fields
+};
 
 export default {
     actions,
