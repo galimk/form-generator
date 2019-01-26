@@ -22,16 +22,17 @@ const actions = {
         commit(actionTypes.addField, {type: fieldType});
     },
     [actionTypes.deleteField]: ({commit}, fieldId) => {
-        commit(actionTypes.deleteField, {type: fieldId});
+        commit(actionTypes.deleteField, fieldId);
     }
 };
 
 const mutations = {
     [actionTypes.addField]: (state, addPayload) => {
         const fields = [...state.fields];
-
+        const newId = fields.length > 0 ? Math.max(...fields.map(e => e.id)) + 1 : 1;
         const newField = {
-            name: `${fields.length} Field`,
+            id: newId,
+            name: `${newId} Field`,
             type: addPayload.type
         };
 
@@ -39,10 +40,13 @@ const mutations = {
 
         state.fields = fields;
     },
-    [actionTypes.deleteField]: (state, deletePayload) => {
+    [actionTypes.deleteField]: (state, fieldId) => {
         const fields = [...state.fields];
-
-
+        const foundIndex = fields.findIndex(e => e.id === fieldId);
+        if (foundIndex !== -1) {
+            fields.splice(foundIndex, 1);
+            state.fields = fields;
+        }
     },
     [actionTypes.updateField]: (state, updatedPayload) => {
 

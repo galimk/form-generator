@@ -7,7 +7,7 @@
       <b-button variant="success" v-if="viewMode" @click="edit()">Edit</b-button>
       <b-button variant="danger" v-if="viewMode" @click="remove()">Remove</b-button>
       <b-button variant="primary" v-if="!viewMode" @click="save()">Save</b-button>
-      <b-button v-if="!viewMode">Cancel</b-button>
+      <b-button v-if="!viewMode" @click="cancel()">Cancel</b-button>
     </b-button-group>
   </b-card>
 </template>
@@ -28,13 +28,16 @@
     },
     methods: {
       edit() {
-
+        this.$set(this, 'mode', 'edit');
       },
       delete() {
 
       },
       remove() {
         this.$emit('removed');
+      },
+      cancel() {
+        this.$set(this, 'mode', 'view');
       }
     }
   }
