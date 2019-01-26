@@ -5,7 +5,7 @@
         <label>Field Name:</label>
         <b-form-input label="Field Name" v-model.trim="$v.fieldName.$model"
                       name="fieldName" id="fieldName" type="text" placeholder="Field Name"
-                      :class="status($v.fieldName)">
+                      :class="inputStatus($v.fieldName)">
         </b-form-input>
         <b-form-invalid-feedback>
           <span v-if="!$v.fieldName.required">Field is required</span>
@@ -22,14 +22,17 @@
         <b-form-select v-model="$v.fieldType.$model" :options="fieldTypes"></b-form-select>
       </div>
       <div>
-        <text-box-properties :field="field" v-if="fieldType === fieldTypes.Text"></text-box-properties>
+        <text-box-properties @validated="childValidated" :field="field"
+                             v-if="fieldType === fieldTypes.Text"></text-box-properties>
         <select-properties :field="field" v-if="fieldType === fieldTypes.Select"></select-properties>
       </div>
     </form>
     <div class="float-right mt-3">
       <b-button variant="primary" class="mr-3" v-if="viewMode" @click="edit()">Edit</b-button>
       <b-button v-if="viewMode" @click="remove()">Remove</b-button>
-      <b-button :disabled="$v.$invalid" variant="primary" class="m-3" v-if="!viewMode" @click="ok()">Save</b-button>
+      <b-button :disabled="$v.$invalid || childInvalid" variant="primary" class="m-3" v-if="!viewMode" @click="ok()">
+        Save
+      </b-button>
       <b-button v-if="!viewMode" @click="cancel()">Cancel</b-button>
     </div>
   </b-card>
@@ -47,19 +50,21 @@
   import {fieldTypes} from "../store/formStore";
   import SelectProperties from './SelectProperties';
   import TextBoxProperties from './TextBoxProperties'
+  import mixins from '../mixins';
 
   export default {
     name: 'FieldPropertiesCard',
     components: {SelectProperties, TextBoxProperties},
     props: ['field', 'removeField'],
     component: [SelectProperties, TextBoxProperties],
-    mixins: [validationMixin],
+    mixins: [validationMixin, mixins],
     data() {
       return {
         mode: 'view',
         fieldName: this.field.name,
         fieldType: this.field.type,
-        fieldTypes: fieldTypes
+        fieldTypes: fieldTypes,
+        childInvalid: false
       }
     },
     validations: {
@@ -95,11 +100,8 @@
       updateFieldProperties(e) {
         e.preventDefault();
       },
-      status(validation) {
-        return {
-          'is-invalid': validation.$error,
-          'is-valid': validation.$dirty && !validation.$error
-        }
+      childValidated(invalid) {
+        this.$set(this, 'childInvalid', invalid);
       }
     }
   }
