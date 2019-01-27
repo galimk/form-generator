@@ -14,7 +14,7 @@
                     </b-button>
                 </div>
             </div>
-            <div class="col-6 mt-2">
+            <div class="col-6 mt-2" v-if="fields.length > 0">
                 <generated-form-card :fields="fields"></generated-form-card>
             </div>
         </div>
