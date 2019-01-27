@@ -5,6 +5,7 @@
                 <field-properties-card
                         v-for="field in fields"
                         :field="field"
+                        :all-fields="fields"
                         @removed="deleteField(field.id)"
                         @update="updateField"
                         :key="field.name">

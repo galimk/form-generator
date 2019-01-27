@@ -20,6 +20,16 @@
                 Must contain numbers.
             </b-form-checkbox>
         </b-row>
+        <b-row>
+            <b-col class="pl-0">
+                <label>Value match with</label>
+            </b-col>
+        </b-row>
+        <b-row class="mb-3">
+            <b-col class="pl-0">
+                <b-form-select v-model="matchFieldId" :options="otherFieldsOptions"></b-form-select>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
@@ -29,13 +39,18 @@
 
     export default {
         name: "PasswordProperties",
-        props: ['field'],
+        props: ['field', 'otherFields'],
         mixins: [mixins],
         data() {
             return {
                 includeSpecialChars: this.field.properties.includeSpecialChars ? "1" : "0",
                 includeNumbers: this.field.properties.includeNumbers ? "1" : "0",
-                minLength: this.field.properties.minLength || 5
+                minLength: this.field.properties.minLength || 5,
+                matchFieldId: this.field.properties.matchFieldId || undefined,
+                otherFieldsOptions: [{text: '- select -'}, ...this.otherFields.map(e => ({
+                    text: e.name,
+                    value: e.id
+                }))]
             }
         },
         validations: {
@@ -58,6 +73,9 @@
             minLength() {
                 this.emitChanges();
             },
+            matchFieldId() {
+                this.emitChanges();
+            },
             '$v.$invalid'() {
                 this.$emit('validated', this.$v.$invalid)
             },
@@ -68,7 +86,8 @@
                     includeSpecialChars: this.includeSpecialChars === "1",
                     includeNumbers: this.includeNumbers === "1",
                     minLength: this.minLength,
-                    required: true
+                    required: true,
+                    matchFieldId: this.matchFieldId
                 });
             }
         }

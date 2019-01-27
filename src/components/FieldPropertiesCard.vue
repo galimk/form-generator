@@ -45,6 +45,7 @@
                 <password-properties
                         @validated="childValidated"
                         @updated="updateFieldProperties"
+                        :other-fields="allFields"
                         :field="field"
                         v-if="fieldType === fieldTypes.Password">
                 </password-properties>
@@ -85,7 +86,7 @@
     export default {
         name: 'FieldPropertiesCard',
         components: {EmailProperties, SelectProperties, TextBoxProperties, PasswordProperties},
-        props: ['field', 'removeField'],
+        props: ['field', 'removeField', 'allFields'],
         mixins: [validationMixin, mixins],
         data() {
             return {

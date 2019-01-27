@@ -151,6 +151,11 @@
                         validationError = `${field.name} must be longer than ${field.properties.minLength} characters.`;
                     }
 
+                    if (field.properties.matchFieldId && this.fieldValues[field.properties.matchFieldId] !== fieldValue) {
+                        const matchField = this.fields.find(e => e.id === field.properties.matchFieldId);
+                        return `${field.name} must match ${matchField.name}`
+                    }
+
                     let digits = /\d/;
                     let specialChars = /[!@#$%^&*(),.?":{}|<>]/;
 
