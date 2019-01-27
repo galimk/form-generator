@@ -6232,6 +6232,10 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.1"
   resolved "https://artifactory.spectrumtoolbox.com:443/artifactory/api/npm/npm/vue-hot-reload-api/-/vue-hot-reload-api-2.3.1.tgz#b2d3d95402a811602380783ea4f566eb875569a2"
 
+vue-json-pretty@^1.4.1:
+  version "1.4.1"
+  resolved "https://artifactory.spectrumtoolbox.com:443/artifactory/api/npm/npm/vue-json-pretty/-/vue-json-pretty-1.4.1.tgz#11599cc8f0beaaf2ba1653010535a5b6071867f9"
+
 vue-loader@^15.4.2:
   version "15.6.0"
   resolved "https://artifactory.spectrumtoolbox.com:443/artifactory/api/npm/npm/vue-loader/-/vue-loader-15.6.0.tgz#c78916dc4f994b1559056d4a1cb92fa0b00e42bf"

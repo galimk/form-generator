@@ -1,6 +1,6 @@
 <template>
     <b-card title="Generated Form" tag="article" class="mb-2">
-        <b-container>
+        <b-container v-if="mode === 'form'">
             <div v-for="field in fields" class="mb-3">
                 <b-row>
                     <b-col class="pl-0">
@@ -32,14 +32,27 @@
                 </b-button>
             </div>
         </b-container>
+        <b-container v-if="mode === 'json'">
+            <div>
+                <vue-json-pretty :data="fieldValues">
+                </vue-json-pretty>
+            </div>
+            <div class="float-right mt-3">
+                <b-button @click="() => $set(this, 'mode', 'form')" class="float-right">
+                    Back
+                </b-button>
+            </div>
+        </b-container>
     </b-card>
 </template>
 
 <script>
     import {fieldTypes} from "../store/formStore";
+    import VueJsonPretty from 'vue-json-pretty'
 
     export default {
         name: "GeneratedFormCard",
+        components: {VueJsonPretty},
         props: ["fields"],
         data() {
             const fieldValues = {};
@@ -51,13 +64,14 @@
             return {
                 validationErrors: {},
                 fieldValues: fieldValues,
-                fieldTypes: fieldTypes
+                fieldTypes: fieldTypes,
+                mode: 'form'
             }
         },
         methods: {
             submit() {
                 if (this.runValidation()) {
-                    alert('wow!');
+                    this.$set(this, 'mode', 'json');
                 }
             },
             validityClass(fieldId) {
@@ -81,11 +95,11 @@
 
                     if (e.type === fieldTypes.Text && fieldValue) {
                         if (fieldValue.length < e.properties.minLength) {
-                            validationErrors[e.id] = `${e.name} must be longer than ${e.minLength} characters.`;
+                            validationErrors[e.id] = `${e.name} must be longer than ${e.properties.minLength} characters.`;
                             valid = false;
                         }
-                        if (fieldValue.length > e.properties.maxLength) {
-                            validationErrors[e.id] = `${e.name} must be longer than ${e.maxLength} characters.`;
+                        if (fieldValue.length >= e.properties.maxLength) {
+                            validationErrors[e.id] = `${e.name} must not be greater than ${e.properties.maxLength} characters.`;
                             valid = false;
                         }
                     }
