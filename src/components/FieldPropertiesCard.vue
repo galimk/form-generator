@@ -16,10 +16,12 @@
           </span>
         </b-form-invalid-feedback>
       </div>
+
       <div class="mb-3">
         <label>Field Type</label>
         <b-form-select v-model="$v.fieldType.$model" :options="fieldTypes"></b-form-select>
       </div>
+
       <div>
         <text-box-properties
           @validated="childValidated"
@@ -34,8 +36,8 @@
           :field="field"
           v-if="fieldType === fieldTypes.Select">
         </select-properties>
-
       </div>
+
     </form>
     <div class="float-right mt-3">
       <b-button variant="primary" class="mr-3" v-if="viewMode" @click="edit()">Edit</b-button>

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import DynamicFormContainer from './views/DynamicFormContainer.vue'
+import FormGeneratorContainer from './views/FormGeneratorContainer.vue'
 
 Vue.use(Router);
 
@@ -11,7 +11,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: DynamicFormContainer
+      component: FormGeneratorContainer
     }
   ]
 })
