@@ -10,7 +10,7 @@
                 <b-row>
 
                     <b-col class="pl-0" v-if="isTextInputField(field)">
-                        <b-form-input type="text"
+                        <b-form-input :type="textInputType(field)"
                                       v-model.trim="fieldValues[field.id]"
                                       @change="runFieldValidationDebounced(field)"
                                       :class="validityClass(field.id)">
@@ -90,6 +90,9 @@
             isTextInputField(field) {
                 return field.type === fieldTypes.Text || field.type === fieldTypes.Password || field.type === fieldTypes.Email;
             },
+            textInputType(field) {
+                return field.type === fieldTypes.Password ? 'password' : 'text';
+            },
             validityClass(fieldId) {
                 if (!this.validationErrors[fieldId]) {
                     return this.fieldValues[fieldId] ? 'is-valid' : '';
@@ -142,6 +145,24 @@
                         validationError = `${field.name} must not be greater than ${field.properties.maxLength} characters.`;
                     }
                 }
+
+                if (field.type === fieldTypes.Password && fieldValue) {
+                    if (fieldValue.length < field.properties.minLength) {
+                        validationError = `${field.name} must be longer than ${field.properties.minLength} characters.`;
+                    }
+
+                    let digits = /\d/;
+                    let specialChars = /[!@#$%^&*(),.?":{}|<>]/;
+
+                    if (field.properties.includeNumbers && !digits.test(fieldValue)) {
+                        validationError = `${field.name} must contain at least one number`;
+                    }
+
+                    if (field.properties.includeSpecialChars && !specialChars.test(fieldValue)) {
+                        validationError = `${field.name} must contain at least one special character`;
+                    }
+                }
+
                 return validationError;
             },
             mapToOptions(options) {

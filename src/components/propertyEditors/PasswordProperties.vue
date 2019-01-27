@@ -12,7 +12,8 @@
             </b-col>
         </b-row>
         <b-row class="mb-3 pt-3">
-            <b-form-checkbox :id="`${field.id}-special-chars`" unchecked-value="0" value="1" v-model="includeSpecialChars">
+            <b-form-checkbox :id="`${field.id}-special-chars`" unchecked-value="0" value="1"
+                             v-model="includeSpecialChars">
                 Must contain special characters.
             </b-form-checkbox>
             <b-form-checkbox :id="`${field.id}-numbers`" unchecked-value="0" value="1" v-model="includeNumbers">
@@ -32,9 +33,9 @@
         mixins: [mixins],
         data() {
             return {
-                includeSpecialChars: this.field.includeSpecialChars ? "1" : "0",
-                includeNumbers: this.field.includeNumbers ? "1" : "0",
-                minLength: this.field.minLength || 5
+                includeSpecialChars: this.field.properties.includeSpecialChars ? "1" : "0",
+                includeNumbers: this.field.properties.includeNumbers ? "1" : "0",
+                minLength: this.field.properties.minLength || 5
             }
         },
         validations: {
@@ -64,9 +65,10 @@
         methods: {
             emitChanges() {
                 this.$emit('updated', {
-                    includeSpecialChars: this.includeSpecialChars,
-                    includeNumbers: this.includeNumbers,
-                    minLength: this.minLength
+                    includeSpecialChars: this.includeSpecialChars === "1",
+                    includeNumbers: this.includeNumbers === "1",
+                    minLength: this.minLength,
+                    required: true
                 });
             }
         }
