@@ -3,9 +3,7 @@
     <form id="app" @submit="updateFieldProperties" v-if="!viewMode">
       <div class="mb-3">
         <label>Field Name:</label>
-        <b-form-input label="Field Name" v-model.trim="$v.fieldName.$model"
-                      name="fieldName" id="fieldName" type="text" placeholder="Field Name"
-                      :class="inputStatus($v.fieldName)">
+        <b-form-input label="Field Name" v-model.trim="$v.fieldName.$model" name="fieldName" id="fieldName" type="text" placeholder="Field Name" :class="inputStatus($v.fieldName)">
         </b-form-input>
         <b-form-invalid-feedback>
           <span v-if="!$v.fieldName.required">Field is required</span>

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import {required, minLength, maxLength} from 'vuelidate/lib/validators'
+  import {required} from 'vuelidate/lib/validators'
   import mixins from '../mixins';
 
   export default {
