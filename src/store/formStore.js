@@ -19,7 +19,10 @@ const actions = {
     },
     [actionTypes.deleteField]: ({commit}, fieldId) => {
         commit(actionTypes.deleteField, fieldId);
-    }
+    },
+    [actionTypes.updateField]: ({commit}, updateFieldData) => {
+        commit(actionTypes.updateField, updateFieldData);
+    },
 };
 
 const mutations = {
@@ -29,7 +32,12 @@ const mutations = {
         const newField = {
             id: newId,
             name: `${newId} Field`,
-            type: fieldTypes.Text
+            type: fieldTypes.Text,
+            properties: {
+                minLength: 5,
+                maxLength: 50,
+                required: true
+            }
         };
         fields.push(newField);
         state.fields = fields;
@@ -43,7 +51,18 @@ const mutations = {
         }
     },
     [actionTypes.updateField]: (state, updatedPayload) => {
-
+        const fields = [...state.fields];
+        const foundIndex = fields.findIndex(e => e.id === updatedPayload.id);
+        if (foundIndex !== -1) {
+            const newFiled = {
+                id: updatedPayload.id,
+                name: updatedPayload.name,
+                type: updatedPayload.type,
+                properties: updatedPayload.properties
+            };
+            fields.splice(foundIndex, 1, newFiled);
+            state.fields = fields;
+        }
     }
 };
 

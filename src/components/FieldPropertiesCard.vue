@@ -23,21 +23,24 @@
       <div>
         <text-box-properties
           @validated="childValidated"
+          @updated="updateFieldProperties"
           :field="field"
           v-if="fieldType === fieldTypes.Text">
         </text-box-properties>
 
         <select-properties
           @validated="childValidated"
+          @updated="updateFieldProperties"
           :field="field"
           v-if="fieldType === fieldTypes.Select">
         </select-properties>
+
       </div>
     </form>
     <div class="float-right mt-3">
       <b-button variant="primary" class="mr-3" v-if="viewMode" @click="edit()">Edit</b-button>
       <b-button v-if="viewMode" @click="remove()">Remove</b-button>
-      <b-button :disabled="$v.$invalid || childInvalid" variant="primary" class="m-3" v-if="!viewMode" @click="ok()">
+      <b-button :disabled="$v.$invalid || childInvalid" variant="primary" class="m-3" v-if="!viewMode" @click="save()">
         Save
       </b-button>
       <b-button v-if="!viewMode" @click="cancel()">Cancel</b-button>
@@ -71,7 +74,9 @@
         fieldName: this.field.name,
         fieldType: this.field.type,
         fieldTypes: fieldTypes,
-        childInvalid: false
+        childInvalid: false,
+        filedProperties: this.field.properties,
+        newFieldProperties: null
       }
     },
     validations: {
@@ -102,10 +107,17 @@
       cancel() {
         this.$set(this, 'mode', 'view');
       },
-      ok() {
+      save() {
+        this.$emit('update', {
+          id: this.field.id,
+          name: this.fieldName,
+          type: this.fieldType,
+          properties: this.newFieldProperties || this.filedProperties
+        });
+        this.$set(this, 'mode', 'view');
       },
-      updateFieldProperties(e) {
-        e.preventDefault();
+      updateFieldProperties(newFieldProperties) {
+        this.$set(this, 'newFieldProperties', newFieldProperties);
       },
       childValidated(invalid) {
         this.$set(this, 'childInvalid', invalid);

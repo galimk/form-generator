@@ -70,19 +70,22 @@
     },
     data() {
       const data = {
-        selectOptions: this.field.options || [],
+        selectOptions: this.field.properties.options || [],
         newOption: '',
-        required: this.field.required || "0"
+        required: this.field.properties.required ? "1" : "0"
       };
       return data;
     },
     watch: {
       'selectOptions'() {
-        this.emitValidity();
+        this.emitChanges();
       },
       'required'() {
-        this.emitValidity();
+        this.emitChanges();
       }
+    },
+    mounted() {
+      this.emitChanges();
     },
     methods: {
       addOption() {
@@ -95,12 +98,19 @@
         newOptions.splice(optionIndex, 1);
         this.$set(this, 'selectOptions', newOptions);
       },
-      mounted() {
+      emitChanges() {
         this.emitValidity();
+        this.emitFieldProperties();
       },
       emitValidity() {
         const valid = this.required === "0" || this.selectOptions.length > 0 && this.required === "1";
         this.$emit('validated', !valid);
+      },
+      emitFieldProperties() {
+        this.$emit('updated', {
+          required: this.required === "1",
+          options: this.selectOptions
+        })
       }
     }
   }

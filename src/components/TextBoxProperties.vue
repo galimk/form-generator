@@ -48,9 +48,9 @@
     },
     data() {
       return {
-        maxLength: this.field.maxLength || 20,
-        minLength: this.field.minLength || 5,
-        required: this.field.required || "0"
+        maxLength: this.field.properties.maxLength || 20,
+        minLength: this.field.properties.minLength || 5,
+        required: this.field.properties.required ? "1" : "0"
       }
     },
     mounted() {
@@ -59,6 +59,24 @@
     watch: {
       '$v.$invalid'() {
         this.$emit('validated', this.$v.$invalid)
+      },
+      'maxLength'() {
+        this.emitChanges();
+      },
+      'minLength'() {
+        this.emitChanges();
+      },
+      'required'() {
+        this.emitChanges();
+      }
+    },
+    methods: {
+      emitChanges() {
+        this.$emit('updated', {
+          maxLength: this.maxLength,
+          minLength: this.minLength,
+          required: this.required === "1"
+        });
       }
     }
   }

@@ -6,6 +6,7 @@
                         v-for="field in fields"
                         :field="field"
                         @removed="deleteField(field.id)"
+                        @update="updateField"
                         :key="field.name">
                 </field-properties-card>
                 <div class="col-auto mr-2">
