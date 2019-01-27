@@ -10,8 +10,7 @@
                 <b-row>
                     <b-col class="pl-0" v-if="field.type === fieldTypes.Text">
                         <b-form-input type="text" v-model.trim="fieldValues[field.id]"
-                                  @change="runFieldValidationDebounced(field)" :class="validityClass(field.id)"
-                                      :placeholder="field.name">
+                                      @change="runFieldValidationDebounced(field)" :class="validityClass(field.id)">
                         </b-form-input>
                         <b-form-invalid-feedback>
                             <span>{{validationErrors[field.id]}}</span>
@@ -36,7 +35,7 @@
         </b-container>
         <b-container v-if="mode === 'json'">
             <div>
-                <vue-json-pretty :data="fieldValues">
+                <vue-json-pretty :data="formatValues()">
                 </vue-json-pretty>
             </div>
             <div class="float-right mt-3">
@@ -82,10 +81,17 @@
             },
             validityClass(fieldId) {
                 if (!this.validationErrors[fieldId]) {
-                    return '';
+                    return this.fieldValues[fieldId] ? 'is-valid' : '';
                 } else {
                     return 'is-invalid';
                 }
+            },
+            formatValues() {
+                let formatted = {};
+                this.fields.forEach(field => {
+                    formatted[field.name.replace(' ', '_')] = this.fieldValues[field.id];
+                });
+                return formatted;
             },
             runValidation() {
                 const validationErrors = {};
