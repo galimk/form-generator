@@ -10,14 +10,16 @@
                 <b-row>
                     <b-col class="pl-0" v-if="field.type === fieldTypes.Text">
                         <b-form-input type="text" v-model.trim="fieldValues[field.id]"
-                                      :class="validityClass(field.id)" :placeholder="field.name">
+                                  @change="runFieldValidationDebounced(field)" :class="validityClass(field.id)"
+                                      :placeholder="field.name">
                         </b-form-input>
                         <b-form-invalid-feedback>
                             <span>{{validationErrors[field.id]}}</span>
                         </b-form-invalid-feedback>
                     </b-col>
                     <b-col class="pl-0" v-if="field.type === fieldTypes.Select">
-                        <b-form-select v-model="fieldValues[field.id]" :class="validityClass(field.id)"
+                        <b-form-select @change="runFieldValidationDebounced(field)" v-model="fieldValues[field.id]"
+                                       :class="validityClass(field.id)"
                                        :options="mapToOptions(field.properties.options)">
                         </b-form-select>
                         <b-form-invalid-feedback>
@@ -48,7 +50,8 @@
 
 <script>
     import {fieldTypes} from "../store/formStore";
-    import VueJsonPretty from 'vue-json-pretty'
+    import VueJsonPretty from 'vue-json-pretty';
+    import _ from 'lodash';
 
     export default {
         name: "GeneratedFormCard",
@@ -68,6 +71,9 @@
                 mode: 'form'
             }
         },
+        created() {
+            this.runFieldValidationDebounced = _.debounce(this.runFieldValidation, 500);
+        },
         methods: {
             submit() {
                 if (this.runValidation()) {
@@ -75,39 +81,48 @@
                 }
             },
             validityClass(fieldId) {
-                if (!this.fieldValues[fieldId] && !this.validationErrors[fieldId]) {
+                if (!this.validationErrors[fieldId]) {
                     return '';
+                } else {
+                    return 'is-invalid';
                 }
-
-                return this.validationErrors[fieldId] ? 'is-invalid' : 'is-valid';
             },
             runValidation() {
                 const validationErrors = {};
                 let valid = true;
 
-                this.fields.filter(e => e.properties).forEach(e => {
-                    const fieldValue = this.fieldValues[e.id];
+                this.fields.filter(field => field.properties).forEach(field => {
+                    let validationError = this.validateField(field);
 
-                    if (!fieldValue && e.properties.required) {
-                        validationErrors[e.id] = `${e.name} is required.`;
+                    if (validationError !== null) {
+                        validationErrors[field.id] = validationError;
                         valid = false;
-                    }
-
-                    if (e.type === fieldTypes.Text && fieldValue) {
-                        if (fieldValue.length < e.properties.minLength) {
-                            validationErrors[e.id] = `${e.name} must be longer than ${e.properties.minLength} characters.`;
-                            valid = false;
-                        }
-                        if (fieldValue.length >= e.properties.maxLength) {
-                            validationErrors[e.id] = `${e.name} must not be greater than ${e.properties.maxLength} characters.`;
-                            valid = false;
-                        }
                     }
                 });
 
                 this.$set(this, 'validationErrors', validationErrors);
 
                 return valid;
+            },
+            validateField(field) {
+                const fieldValue = this.fieldValues[field.id];
+                let validationError = null;
+
+                if (!fieldValue && field.properties.required) {
+                    validationError = `${field.name} is required.`;
+                }
+
+                if (field.type === fieldTypes.Text && fieldValue) {
+                    if (fieldValue.length < field.properties.minLength) {
+                        validationError = `${field.name} must be longer than ${field.properties.minLength} characters.`;
+                    }
+
+                    if (fieldValue.length >= field.properties.maxLength) {
+                        validationError = `${field.name} must not be greater than ${field.properties.maxLength} characters.`;
+                    }
+
+                }
+                return validationError;
             },
             mapToOptions(options) {
                 if (!options) {
@@ -116,6 +131,12 @@
                 const resultOptions = options.map(e => ({value: e, text: e}));
                 resultOptions.unshift({text: `- select -`});
                 return resultOptions;
+            },
+            runFieldValidation(field) {
+                const validationError = this.validateField(field);
+                const validationErrors = {...this.validationErrors};
+                validationErrors[field.id] = validationError;
+                this.$set(this, 'validationErrors', validationErrors);
             }
         }
     }
