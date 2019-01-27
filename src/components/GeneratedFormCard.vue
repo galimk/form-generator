@@ -8,16 +8,21 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col class="pl-0" v-if="field.type === fieldTypes.Text">
-                        <b-form-input type="text" v-model.trim="fieldValues[field.id]"
-                                      @change="runFieldValidationDebounced(field)" :class="validityClass(field.id)">
+
+                    <b-col class="pl-0" v-if="isTextInputField(field)">
+                        <b-form-input type="text"
+                                      v-model.trim="fieldValues[field.id]"
+                                      @change="runFieldValidationDebounced(field)"
+                                      :class="validityClass(field.id)">
                         </b-form-input>
                         <b-form-invalid-feedback>
                             <span>{{validationErrors[field.id]}}</span>
                         </b-form-invalid-feedback>
                     </b-col>
+
                     <b-col class="pl-0" v-if="field.type === fieldTypes.Select">
-                        <b-form-select @change="runFieldValidationDebounced(field)" v-model="fieldValues[field.id]"
+                        <b-form-select @change="runFieldValidationDebounced(field)"
+                                       v-model="fieldValues[field.id]"
                                        :class="validityClass(field.id)"
                                        :options="mapToOptions(field.properties.options)">
                         </b-form-select>
@@ -25,6 +30,7 @@
                             <span>{{validationErrors[field.id]}}</span>
                         </b-form-invalid-feedback>
                     </b-col>
+
                 </b-row>
             </div>
             <div class="float-right mt-3">
@@ -51,11 +57,13 @@
     import {fieldTypes} from "../store/formStore";
     import VueJsonPretty from 'vue-json-pretty';
     import _ from 'lodash';
+    import mixins from "../mixins";
 
     export default {
         name: "GeneratedFormCard",
         components: {VueJsonPretty},
         props: ["fields"],
+        mixins: [mixins],
         data() {
             const fieldValues = {};
 
@@ -78,6 +86,9 @@
                 if (this.runValidation()) {
                     this.$set(this, 'mode', 'json');
                 }
+            },
+            isTextInputField(field) {
+                return field.type === fieldTypes.Text || field.type === fieldTypes.Password || field.type === fieldTypes.Email;
             },
             validityClass(fieldId) {
                 if (!this.validationErrors[fieldId]) {
@@ -118,6 +129,10 @@
                     validationError = `${field.name} is required.`;
                 }
 
+                if (field.type === fieldTypes.Email && fieldValue && !this.isValidEmail(fieldValue)) {
+                    validationError = `Invalid email.`;
+                }
+
                 if (field.type === fieldTypes.Text && fieldValue) {
                     if (fieldValue.length < field.properties.minLength) {
                         validationError = `${field.name} must be longer than ${field.properties.minLength} characters.`;
@@ -126,7 +141,6 @@
                     if (fieldValue.length >= field.properties.maxLength) {
                         validationError = `${field.name} must not be greater than ${field.properties.maxLength} characters.`;
                     }
-
                 }
                 return validationError;
             },

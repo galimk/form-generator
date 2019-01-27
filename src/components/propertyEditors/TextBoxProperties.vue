@@ -29,7 +29,7 @@
 
 <script>
   import {required} from 'vuelidate/lib/validators'
-  import mixins from '../mixins';
+  import mixins from '../../mixins';
 
   export default {
     name: "TextBoxProperties",

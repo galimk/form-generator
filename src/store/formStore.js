@@ -6,7 +6,9 @@ export const actionTypes = {
 
 export const fieldTypes = {
     Text: 'Text',
-    Select: 'Select'
+    Select: 'Select',
+    Email: 'Email',
+    Password: 'Password'
 };
 
 const state = {

@@ -34,6 +34,20 @@
                         :field="field"
                         v-if="fieldType === fieldTypes.Select">
                 </select-properties>
+
+                <email-properties
+                        @validated="childValidated"
+                        @updated="updateFieldProperties"
+                        :field="field"
+                        v-if="fieldType === fieldTypes.Email">
+                </email-properties>
+
+                <password-properties
+                        @validated="childValidated"
+                        @updated="updateFieldProperties"
+                        :field="field"
+                        v-if="fieldType === fieldTypes.Password">
+                </password-properties>
             </div>
 
         </form>
@@ -59,8 +73,10 @@
     import {required, minLength, maxLength} from 'vuelidate/lib/validators'
     import {validationMixin} from 'vuelidate'
     import {fieldTypes} from "../store/formStore";
-    import SelectProperties from './SelectProperties';
-    import TextBoxProperties from './TextBoxProperties'
+    import SelectProperties from './propertyEditors/SelectProperties';
+    import TextBoxProperties from './propertyEditors/TextBoxProperties'
+    import PasswordProperties from './propertyEditors/PasswordProperties';
+    import EmailProperties from './propertyEditors/EmailProperties';
     import mixins from '../mixins';
     import {helpers} from 'vuelidate/lib/validators'
 
@@ -68,9 +84,8 @@
 
     export default {
         name: 'FieldPropertiesCard',
-        components: {SelectProperties, TextBoxProperties},
+        components: {EmailProperties, SelectProperties, TextBoxProperties, PasswordProperties},
         props: ['field', 'removeField'],
-        component: [SelectProperties, TextBoxProperties],
         mixins: [validationMixin, mixins],
         data() {
             return {
@@ -100,6 +115,13 @@
             },
             cardHeader() {
                 return this.mode === 'view' ? this.fieldName : ''
+            }
+        },
+        watch: {
+            fieldType() {
+                if (this.fieldType === this.fieldTypes.Email) {
+                    this.$set(this, 'childInvalid', false);
+                }
             }
         },
         methods: {

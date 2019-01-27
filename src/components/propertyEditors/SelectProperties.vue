@@ -52,7 +52,7 @@
 </style>
 
 <script>
-  import mixins from '../mixins';
+  import mixins from '../../mixins';
   import {required} from 'vuelidate/lib/validators'
 
   export default {
