@@ -31,9 +31,7 @@ const mutations = {
             name: `${newId} Field`,
             type: fieldTypes.Text
         };
-
         fields.push(newField);
-
         state.fields = fields;
     },
     [actionTypes.deleteField]: (state, fieldId) => {

@@ -7,20 +7,20 @@
         <b-form-invalid-feedback>
           <span v-if="!$v.minLength.required">Min Length is required</span>
           <span v-if="!$v.minLength.lessThenMax">Must be less then Max Length</span>
-          <span v-if="!$v.minLength.greaterThenZero">Must be greater then 0 when field is required</span>
+          <span v-if="!$v.minLength.greaterThenZero && $v.minLength.required">Must be greater then 0 when field is required</span>
         </b-form-invalid-feedback>
       </b-col>
       <b-col class="pr-0">
         <label>Max Length</label>
         <b-form-input v-model="$v.maxLength.$model" type="number" :class="inputStatus($v.maxLength)"></b-form-input>
         <b-form-invalid-feedback>
-          <span v-if="!$v.maxLength.required">Max Length is required</span>
-          <span v-if="!$v.maxLength.greaterThenMin">Must be greater then Min Length</span>
+          <div v-if="!$v.maxLength.required">Max Length is required</div>
+          <div v-if="!$v.maxLength.greaterThenMin">Must be greater then Min Length</div>
         </b-form-invalid-feedback>
       </b-col>
     </b-row>
     <b-row class="mb-3">
-      <b-form-checkbox id="checkbox1" unchecked-value="0" value="1" v-model="required">
+      <b-form-checkbox :id="`${field.id}-required`" unchecked-value="0" value="1" v-model="required">
         Required Field
       </b-form-checkbox>
     </b-row>

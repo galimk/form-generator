@@ -2,8 +2,9 @@
   <b-card :title="cardHeader" tag="article" class="mb-2">
     <form id="app" @submit="updateFieldProperties" v-if="!viewMode">
       <div class="mb-3">
-        <label>Field Name:</label>
-        <b-form-input label="Field Name" v-model.trim="$v.fieldName.$model" name="fieldName" id="fieldName" type="text" placeholder="Field Name" :class="inputStatus($v.fieldName)">
+        <label>Field Name</label>
+        <b-form-input label="Field Name" v-model.trim="$v.fieldName.$model" name="fieldName" id="fieldName" type="text"
+                      placeholder="Field Name" :class="inputStatus($v.fieldName)">
         </b-form-input>
         <b-form-invalid-feedback>
           <span v-if="!$v.fieldName.required">Field is required</span>
@@ -16,13 +17,21 @@
         </b-form-invalid-feedback>
       </div>
       <div class="mb-3">
-        <label>Field Type:</label>
+        <label>Field Type</label>
         <b-form-select v-model="$v.fieldType.$model" :options="fieldTypes"></b-form-select>
       </div>
       <div>
-        <text-box-properties @validated="childValidated" :field="field"
-                             v-if="fieldType === fieldTypes.Text"></text-box-properties>
-        <select-properties :field="field" v-if="fieldType === fieldTypes.Select"></select-properties>
+        <text-box-properties
+          @validated="childValidated"
+          :field="field"
+          v-if="fieldType === fieldTypes.Text">
+        </text-box-properties>
+
+        <select-properties
+          @validated="childValidated"
+          :field="field"
+          v-if="fieldType === fieldTypes.Select">
+        </select-properties>
       </div>
     </form>
     <div class="float-right mt-3">

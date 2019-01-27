@@ -2,7 +2,7 @@
   <b-container>
     <b-row>
       <b-col class="pl-0">
-        <label>Options:</label>
+        <label>Options</label>
       </b-col>
     </b-row>
     <b-row class="mb-3">
@@ -17,7 +17,7 @@
         </b-form-invalid-feedback>
       </b-col>
       <b-col class="col-2 ml-0 pl-0">
-        <b-button variant="primary" @click="addOption" :disabled="$v.$invalid">Add</b-button>
+        <b-button variant="primary" @click="addOption" :disabled="$v.newOption.$invalid">Add</b-button>
       </b-col>
     </b-row>
     <b-row>
@@ -29,9 +29,13 @@
       </b-col>
     </b-row>
     <b-row class="mb-3">
-      <b-form-checkbox id="checkbox1" unchecked-value="0" value="1" v-model="required">
+      <b-form-checkbox id="${field.id}-select-required" unchecked-value="0" value="1" v-model="$v.required.$model"
+                       :class="inputStatus($v.required)">
         Required Field
       </b-form-checkbox>
+    </b-row>
+    <b-row v-if="!$v.required.optionsExist">
+      <div class="requiredError mt-2">When field is required at least one option must be added</div>
     </b-row>
   </b-container>
 </template>
@@ -39,6 +43,11 @@
 <style scoped>
   h5 {
     display: inline;
+  }
+
+  .requiredError {
+    font-size: 80%;
+    color: #dc3545;
   }
 </style>
 
@@ -53,9 +62,10 @@
     validations: {
       newOption: {
         required,
-        notDuplicate(value, vm) {
-          return vm.selectOptions.indexOf(value) === -1
-        }
+        notDuplicate: (value, vm) => vm.selectOptions.indexOf(value) === -1
+      },
+      required: {
+        optionsExist: (value, vm) => vm.required === "0" || vm.selectOptions.length > 0 && vm.required === "1"
       }
     },
     data() {
@@ -64,9 +74,15 @@
         newOption: '',
         required: this.field.required || "0"
       };
-
-
       return data;
+    },
+    watch: {
+      'selectOptions'() {
+        this.emitValidity();
+      },
+      'required'() {
+        this.emitValidity();
+      }
     },
     methods: {
       addOption() {
@@ -78,6 +94,13 @@
         const newOptions = [...this.selectOptions];
         newOptions.splice(optionIndex, 1);
         this.$set(this, 'selectOptions', newOptions);
+      },
+      mounted() {
+        this.emitValidity();
+      },
+      emitValidity() {
+        const valid = this.required === "0" || this.selectOptions.length > 0 && this.required === "1";
+        this.$emit('validated', !valid);
       }
     }
   }
