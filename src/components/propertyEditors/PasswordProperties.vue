@@ -47,7 +47,7 @@
                 includeNumbers: this.field.properties.includeNumbers ? "1" : "0",
                 minLength: this.field.properties.minLength || 5,
                 matchFieldId: this.field.properties.matchFieldId || undefined,
-                otherFieldsOptions: [{text: '- select -'}, ...this.otherFields.map(e => ({
+                otherFieldsOptions: [{text: '- select -'}, ...this.otherFields.filter(e => e.id !== this.field.id).map(e => ({
                     text: e.name,
                     value: e.id
                 }))]
